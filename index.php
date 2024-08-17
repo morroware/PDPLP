@@ -1,56 +1,67 @@
 <?php
 // 1. Introduction to PHP
-// PHP is a server-side scripting language designed for web development.
-// PHP code is executed on the server, generating HTML which is then sent to the client.
-// PHP files have a .php extension and can contain HTML, CSS, JavaScript, and PHP code.
+// This entire file demonstrates basic PHP syntax and structure
 
 // 2. Variables and Data Types
-// In PHP, variables start with a $ sign and are case-sensitive.
-// PHP is a loosely typed language, meaning you don't need to declare variable types explicitly.
+$pageTitle = "My PHP Blog";  // String
+$postCount = 0;  // Integer
+$isLoggedIn = false;  // Boolean
+$pi = 3.14;  // Float
+$emptyVar = null;  // Null
 
-$pageTitle = "My PHP Blog";  // String: Sequence of characters
-$postCount = 0;  // Integer: Whole number
-$isLoggedIn = false;  // Boolean: true or false
-$pi = 3.14;  // Float: Number with decimal point
-$emptyVar = null;  // Null: Variable with no value
+// Variable scope demonstration
+function demonstrateScope() {
+    global $pageTitle;
+    $localVar = "I'm local";
+    echo "Global \$pageTitle inside function: $pageTitle<br>";
+    echo "Local \$localVar inside function: $localVar<br>";
+}
 
 // 3. Constants
-// Constants are identifiers for simple values that cannot be changed during script execution.
-// There are two ways to define constants in PHP:
-
-define("SITE_NAME", "PHP Learning Blog");  // Using define() function
-const ADMIN_EMAIL = "admin@example.com";   // Using const keyword (PHP 5.3+)
+define("SITE_NAME", "PHP Learning Blog");
+const ADMIN_EMAIL = "admin@example.com";
 
 // 4. Arrays
-// Arrays in PHP can hold multiple values under a single variable name.
-// PHP supports three types of arrays: indexed, associative, and multidimensional.
-
-$posts = [];  // Indexed array: Empty array to store posts
-$categories = [  // Associative array: Key-value pairs
+$posts = [];  // Indexed array
+$categories = [  // Associative array
     "php" => "PHP",
     "web" => "Web Development",
     "db" => "Databases"
 ];
-$users = [  // Multidimensional array: Array containing other arrays
+$users = [  // Multidimensional array
     ["name" => "John", "email" => "john@example.com"],
     ["name" => "Jane", "email" => "jane@example.com"]
 ];
 
-// 5. Control Structures & 6. Loops
-// Control structures allow you to control the flow of your program's execution.
-// Loops are used to execute a block of code repeatedly.
+// Array functions demonstration
+$numbers = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3];
+sort($numbers);
+$numberCount = count($numbers);
 
+// 5. Control Structures
+function categorizePost($category) {
+    if ($category === 'php') {
+        return "PHP Post";
+    } elseif ($category === 'web') {
+        return "Web Development Post";
+    } else {
+        return "Other Post";
+    }
+}
+
+// Ternary operator
+$displayName = isset($_SESSION['user']) ? $_SESSION['user'] : 'Guest';
+
+// 6. Loops
 function displayPosts($posts) {
-    // The if-else statement is used for conditional execution
     if (empty($posts)) {
         echo "No posts found.";
     } else {
-        // The foreach loop is used to iterate over arrays
-        foreach ($posts as $post) {
-            echo "<h2>{$post['title']}</h2>";
+        foreach ($posts as $index => $post) {
+            echo "<h2>" . ($index + 1) . ". {$post['title']}</h2>";
             echo "<p>{$post['content']}</p>";
             
-            // The switch statement is used to perform different actions based on different conditions
+            // Switch statement example
             switch ($post['category']) {
                 case 'php':
                     echo "<span class='category php'>PHP</span>";
@@ -67,13 +78,29 @@ function displayPosts($posts) {
     }
 }
 
-// 7. Functions
-// Functions are blocks of reusable code that perform specific tasks.
-// They help organize code and promote reusability.
+// While loop example
+function countDown($start) {
+    while ($start > 0) {
+        echo $start . "... ";
+        $start--;
+    }
+    echo "Blast off!";
+}
 
-// Regular function with parameters
+// Do-while loop example
+function guessNumber($target) {
+    $guess = 0;
+    $attempts = 0;
+    do {
+        $guess = rand(1, 10);
+        $attempts++;
+    } while ($guess != $target);
+    return $attempts;
+}
+
+// 7. Functions
 function addPost($title, $content, $category) {
-    global $posts;  // 'global' keyword is used to access global variables inside functions
+    global $posts;
     $posts[] = [
         'title' => $title,
         'content' => $content,
@@ -81,28 +108,27 @@ function addPost($title, $content, $category) {
     ];
 }
 
-// Anonymous function (also called closures)
-// These are functions without a name, often used as callback functions
+// Function with default parameter
+function greet($name = "Guest") {
+    return "Hello, $name!";
+}
+
+// Anonymous function example
 $wordCount = function($str) {
     return str_word_count($str);
 };
 
-// Variadic function (PHP 5.6+)
-// These functions can accept a variable number of arguments
+// Variadic function example
 function sum(...$numbers) {
     return array_sum($numbers);
 }
 
 // 8. Superglobals
-// Superglobals are built-in variables that are always available in all scopes
-session_start();  // Start a new or resume existing session
-$_SESSION['user'] = 'John Doe';  // $_SESSION is used to store data for a specific session
+session_start();
+$_SESSION['user'] = 'John Doe';
 
 // 9. Working with Forms
-// PHP can collect form data after submitting an HTML form
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {  // Check if the form was submitted
-    // Retrieve form data using the $_POST superglobal
-    // The ?? operator is the null coalescing operator (PHP 7+)
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = $_POST['title'] ?? '';
     $content = $_POST['content'] ?? '';
     $category = $_POST['category'] ?? '';
@@ -111,29 +137,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {  // Check if the form was submitted
     if (empty($title) || empty($content) || empty($category)) {
         $error = "All fields are required.";
     } else {
+        // Sanitize input
+        $title = htmlspecialchars($title);
+        $content = htmlspecialchars($content);
+        $category = htmlspecialchars($category);
+        
         addPost($title, $content, $category);
         $success = "Post added successfully.";
     }
 }
 
 // 10. Include and Require
-// These statements are used to include and evaluate other PHP files
-// For demonstration purposes, we'll just define a function here
-// In a real project, this would be in a separate file
+// For demonstration purposes, we'll just define functions here
+// In a real project, these would be in separate files
+function getHeader() {
+    return "<header><h1>" . SITE_NAME . "</h1></header>";
+}
+
 function getFooter() {
     return "<footer>&copy; " . date('Y') . " " . SITE_NAME . "</footer>";
 }
 
 // 11. Error Handling
-// Custom error handler to handle errors gracefully
 function customErrorHandler($errno, $errstr, $errfile, $errline) {
     echo "<b>Error:</b> [$errno] $errstr<br>";
     echo "Error on line $errline in $errfile";
 }
-set_error_handler("customErrorHandler");  // Set the custom error handler
+set_error_handler("customErrorHandler");
 
 // Main content
-// PHP can be embedded in HTML. When PHP encounters HTML, it simply passes it through to the browser.
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -150,10 +182,44 @@ set_error_handler("customErrorHandler");  // Set the custom error handler
     </style>
 </head>
 <body>
-    <h1><?php echo SITE_NAME; ?></h1>
+    <?php echo getHeader(); ?>
     
+    <h2>PHP Basics Demonstration</h2>
+    
+    <h3>Variables and Scope</h3>
     <?php
-    // Display error or success messages
+    demonstrateScope();
+    echo "Global \$pageTitle outside function: $pageTitle<br>";
+    // This will cause an undefined variable error, demonstrating local scope
+    // Uncomment to see the error: echo $localVar;
+    ?>
+
+    <h3>Constants</h3>
+    <p>Site Name: <?php echo SITE_NAME; ?></p>
+    <p>Admin Email: <?php echo ADMIN_EMAIL; ?></p>
+
+    <h3>Arrays</h3>
+    <p>Categories:</p>
+    <ul>
+    <?php foreach ($categories as $key => $value): ?>
+        <li><?php echo "$key: $value"; ?></li>
+    <?php endforeach; ?>
+    </ul>
+    <p>Sorted numbers: <?php echo implode(', ', $numbers); ?></p>
+    <p>Count of numbers: <?php echo $numberCount; ?></p>
+
+    <h3>Control Structures and Loops</h3>
+    <p>Categorize 'php': <?php echo categorizePost('php'); ?></p>
+    <p>Display Name: <?php echo $displayName; ?></p>
+    <p>Countdown: <?php countDown(5); ?></p>
+    <p>Guesses to find number: <?php echo guessNumber(7); ?></p>
+
+    <h3>Functions</h3>
+    <p><?php echo greet(); ?></p>
+    <p><?php echo greet("Alice"); ?></p>
+    <p>Sum of 1, 2, 3, 4, 5: <?php echo sum(1, 2, 3, 4, 5); ?></p>
+
+    <?php
     if (isset($error)) {
         echo "<p style='color: red;'>$error</p>";
     }
@@ -175,10 +241,7 @@ set_error_handler("customErrorHandler");  // Set the custom error handler
         <div>
             <label for="category">Category:</label>
             <select id="category" name="category" required>
-                <?php 
-                // Use foreach to iterate over the categories array
-                foreach ($categories as $key => $value): 
-                ?>
+                <?php foreach ($categories as $key => $value): ?>
                     <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
                 <?php endforeach; ?>
             </select>
@@ -188,23 +251,20 @@ set_error_handler("customErrorHandler");  // Set the custom error handler
 
     <h2>Posts</h2>
     <?php
-    // Display all posts
     displayPosts($posts);
     
     // Demonstrating the anonymous function
-    // array_map applies the $wordCount function to each element of the array
-    // array_column extracts the 'content' column from the $posts array
     echo "<p>Total words in all posts: " . array_sum(array_map($wordCount, array_column($posts, 'content'))) . "</p>";
     
-    // Demonstrating the variadic function
-    echo "<p>Sum of 1, 2, 3, 4, 5: " . sum(1, 2, 3, 4, 5) . "</p>";
-    
-    // Demonstrating error handling with try-catch
+    // Demonstrating error handling
     try {
-        $result = 10 / 0;  // This will throw a DivisionByZeroError
+        $result = 10 / 0;
     } catch (DivisionByZeroError $e) {
         echo "<p>Error caught: " . $e->getMessage() . "</p>";
     }
+
+    // Demonstrating $_SERVER superglobal
+    echo "<p>You are visiting from: " . $_SERVER['REMOTE_ADDR'] . "</p>";
     ?>
 
     <?php echo getFooter(); ?>

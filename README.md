@@ -2,7 +2,7 @@
 
 ## 1.1 What is PHP?
 
-PHP (Hypertext Preprocessor) is a widely-used, open-source scripting language especially suited for web development. It can be embedded into HTML and is particularly effective in creating dynamic web pages and applications. The provided script (index.php) and also be seen here https://sethmorrow.com/pdplp
+PHP (Hypertext Preprocessor) is a widely-used, open-source scripting language especially suited for web development. It can be embedded into HTML and is particularly effective in creating dynamic web pages and applications. The provided script (index.php) is in this github repository, and can be seen running on a server here: https://sethmorrow.com/pdplp
 
 Our provided script begins with the PHP opening tag:
 
